@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Fresh\DoctrineEnumBundle\Validator\Constraints as EnumAssert;
+use App\DBAL\Types\PlatformType;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\OfferRepository")
@@ -19,14 +21,30 @@ class Offer
      */
     private $id;
 
-    // add your own fields
-
     /**
      * @var
      * @ORM\Column(type="string", unique=true)
      * @Assert\Uuid
      */
-    protected $application_id;
+    private $application_id;
+
+    /**
+     * @ORM\Column(type="string", length=2)
+     * @Assert\Country()
+     */
+    private $countries;
+
+    /**
+     * @var
+     * @ORM\Column(type="decimal", scale=2)
+     */
+    private $payout;
+
+    /**
+     * @ORM\Column(name="platform", type="PlatformType", nullable=false)
+     * @EnumAssert\Enum(entity="App\DBAL\Types\PlatformType")
+     */
+    private $platform;
 
     /**
      * @return \Ramsey\Uuid\Uuid
@@ -45,19 +63,67 @@ class Offer
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getApplicationId()
+    public function getApplicationId(): string
     {
         return $this->application_id;
     }
 
     /**
-     * @param mixed $application_id
+     * @param string $application_id
      */
-    public function setApplicationId($application_id)
+    public function setApplicationId(string $application_id)
     {
         $this->application_id = $application_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPlatform(): string
+    {
+        return $this->platform;
+    }
+
+    /**
+     * @param string $platform
+     */
+    public function setPlatform(string $platform)
+    {
+        $this->platform = $platform;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCountries(): string
+    {
+        return $this->countries;
+    }
+
+    /**
+     * @param string $countries
+     */
+    public function setCountries(string $countries)
+    {
+        $this->countries = $countries;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPayout(): string
+    {
+        return $this->payout;
+    }
+
+    /**
+     * @param string $payout
+     */
+    public function setPayout(string $payout)
+    {
+        $this->payout = $payout;
     }
 
 
