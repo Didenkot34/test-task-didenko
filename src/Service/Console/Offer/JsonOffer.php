@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Service\Offer;
+namespace App\Service\Console\Offer;
 
 
 use App\Entity\Offer;
+use App\Service\Console\CreateStrategy;
+use App\Service\Console\Entity;
 
 class JsonOffer extends CreateStrategy
 {
@@ -13,10 +15,10 @@ class JsonOffer extends CreateStrategy
 
     /**
      * Strategy for creating Offer using data in json format
-     * @param OfferService $offerService
+     * @param Entity $offerService
      * @return array
      */
-    public function create(OfferService $offerService): array
+    public function create(Entity $offerService): array
     {
         $this->entityManager = $offerService->getEntityManager();
         $this->data = json_decode($offerService->getData(), true);

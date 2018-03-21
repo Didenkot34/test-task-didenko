@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Offer;
-use App\Service\Offer\JsonOffer;
-use App\Service\Offer\OfferService;
+use App\Service\Console\Offer\JsonOffer;
+use App\Service\Console\Offer\OfferService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

@@ -1,17 +1,22 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: ura
+ * Date: 21.03.2018
+ * Time: 23:57
+ */
 
-namespace App\Service\Offer;
+namespace App\Service\Console;
 
 
-class OfferService
+abstract class Entity
 {
-
     private $data;
     private $entityManager;
     private $strategy;
 
     /**
-     * OfferService constructor.
+     * Entity constructor.
      * @param $data
      * @param $entityManager
      * @param CreateStrategy $strategy
@@ -46,6 +51,4 @@ class OfferService
     {
         return $this->strategy->create($this);
     }
-
-
 }
