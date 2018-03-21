@@ -19,13 +19,10 @@ class ApiController extends Controller
     public function offer(Request $request)
     {
         //...something do with Request
-        $uuid1 = Uuid::uuid1();
+        //$uuid1 = Uuid::uuid1();
+        $response = json_decode(file_get_contents(__DIR__ . '/apiResource/data.json'), true);
+        // print_r(($response[0][0]));
+        return $this->json($response);
 
-        return $this->json([
-            'application_id' => $uuid1->toString(),
-            'countries' => 'uk',
-            'payout' => '100',
-            'platform' => PlatformType::ANDROID,
-        ]);
     }
 }

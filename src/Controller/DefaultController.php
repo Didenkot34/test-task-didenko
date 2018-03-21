@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Offer;
+use App\Service\Offer\JsonOffer;
+use App\Service\Offer\OfferService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -21,22 +23,20 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/create-offer", name="create_offer")
+     * @Route("/create-offer-json", name="create_offer_json")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function createOffer(Request $request)
+    public function createOfferJson(Request $request)
     {
-        $offer = new Offer();
-        $offer->setApplicationId($request->query->get('application_id'));
-        $offer->setCountries($request->query->get('countries', 'en'));
-        $offer->setPayout($request->query->get('payuot', 100));
-        $offer->setPlatform($request->query->get('platform', 'iOS'));
+        $offerService = new OfferService(
+            $request->get('data'),
+            $this->getDoctrine()->getManager(),
+            new JsonOffer()
+        );
 
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($offer);
-        $entityManager->flush();
+        $result = $offerService->create();
 
-        return $this->json(['error' => false]);
+        return $this->json($result);
     }
 }

@@ -29,14 +29,14 @@ class Offer
     private $application_id;
 
     /**
-     * @ORM\Column(type="string", length=2)
+     * @ORM\Column(type="json_document", options={"jsonb": true})
      * @Assert\Country()
      */
     private $countries;
 
     /**
      * @var
-     * @ORM\Column(type="decimal", scale=2)
+     * @ORM\Column(type="decimal", scale=2, options={"default" = 0})
      */
     private $payout;
 

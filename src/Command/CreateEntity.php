@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use GuzzleHttp\Client;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,6 +14,10 @@ abstract class CreateEntity extends ContainerAwareCommand
     private $description = 'Creates a new Entity in DB.';
 
 
+    /**
+     * CreateEntity constructor.
+     * @param RouterInterface $router
+     */
     public function __construct(RouterInterface $router)
     {
         parent::__construct(null);
@@ -40,10 +45,16 @@ abstract class CreateEntity extends ContainerAwareCommand
         ]);
 
         //get result from Api
-        $resultFromApi = $this->sendRequestByCurl($this->getApiUrl());
+        $resultFromApi = $this->sendRequestByCurl('GET', $this->getApiUrl());
 
         // set result to Offer
-        $this->sendRequestByCurl($this->getUrlForSaveEntity($resultFromApi));
+        $this->sendRequestByCurl('POST',
+            $this->getUrlForSaveEntity([]),
+            [
+                'form_params' => [
+                    'data' => \GuzzleHttp\json_encode($resultFromApi)
+                ]
+            ]);
     }
 
     /**
@@ -57,28 +68,16 @@ abstract class CreateEntity extends ContainerAwareCommand
 
     /**
      * Send request using curl
+     * @param string $method
      * @param string $url
      * @param array $params
-     * @return mixed
+     * @return array
      */
-    public function sendRequestByCurl(string $url, array $params = [])
+    public function sendRequestByCurl(string $method, string $url, array $params = []): array
     {
-        $query = '';
-
-        if (!empty($params)) {
-
-            foreach ($params as $key => $value) {
-                $query .= $key . '=' . $value . '&';
-            }
-            $query = '?' . trim($query, '&');
-        }
-
-        $ch = curl_init($url . $query);
-
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $result = curl_exec($ch);
-        curl_close($ch);
-        return json_decode(trim($result, '1'), true);
+        $client = new Client();
+        $result = $client->request($method, $url, $params);
+        return json_decode($result->getBody(), true) ?? [];
     }
 
     /**
@@ -90,8 +89,7 @@ abstract class CreateEntity extends ContainerAwareCommand
         $context = $this->router->getContext();
         $context->setHost($this->getHost());
         $context->setScheme($this->getSchema());
-        $context->setParameters($params);
-        return $this->router->generate($this->getLocalRout(), $context->getParameters(), 0);
+        return $this->router->generate($this->getLocalRout(), $params, 0);
     }
 
     public abstract function getApiUrl(): string;
